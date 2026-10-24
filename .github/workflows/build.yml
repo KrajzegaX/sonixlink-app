@@ -18,11 +18,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Ensure gradlew exists
+        run: |
+          if [ ! -f "gradlew" ]; then
+            echo "Brak gradlew, generowanie przez systemowy Gradle..."
+            gradle wrapper
+          fi
+          chmod +x gradlew
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
@@ -31,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sonixlink-1.2.1
-          path: app/build/outputs/apk/debug/*.apk
+          path: "**/build/outputs/apk/debug/*.apk"
